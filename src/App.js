@@ -1,25 +1,39 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Container from 'react-bootstrap/Container';
+
+
+import ShowCars from './components/ShowCars'
+
+const httpAddress = 'http://carsback-env.eba-faqp7dvt.us-east-2.elasticbeanstalk.com/'
 
 function App() {
+  const [ isLoading, setIsLoading ] = useState(true)
+  const [ carsData, setCarsData ] = useState()
+
+  useEffect(() => {
+    getCars() 
+  }, [])
+
+  const getCars = async () => {
+    const response = await axios.get(httpAddress);
+    setCarsData(response.data.cars);
+    setIsLoading(false);
+  }
+  
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    
+    <div className='container'>
+      <ShowCars carsPropsList={carsData} />
     </div>
-  );
+  
+  )  
 }
 
 export default App;
